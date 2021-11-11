@@ -1,0 +1,30 @@
+name: test-actions
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v1
+    - name: Set Version
+      id: setversion
+      uses: berglie/assembly-version/set-buildnumber@v1
+    - name: Set Version With Parameters
+      uses: berglie/assembly-version/set-buildnumber@v1
+      with:
+        filename: 'AssemblyInfo.cs'
+        directory: './test/'
+        recursive: false
+    - name: Get Version      
+      uses: berglie/assembly-version/get@v1
+      with:
+        filename: 'AssemblyInfo.cs'
+    - name: Upload  artifact(s)
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test Results ${{steps.setversion.outputs.version}}
+        path: ./test/*.cs

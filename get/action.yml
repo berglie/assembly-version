@@ -1,0 +1,26 @@
+name: 'Set Assembly Version'
+author: 'berglie'
+branding:
+  icon: 'terminal'
+  color: 'purple'
+description: 'Get assembly version number from specified assembly version file'
+inputs:
+  filename:
+    description: 'Filename for assembly version'
+    required: true
+  directory:
+    description: 'Directory where assembly version file is located'
+    default: './'
+runs:
+  using: composite
+  steps:
+    - shell: pwsh
+      id: getversion
+      env:
+        FILENAME: ${{ inputs.filename }}
+        DIRECTORY: ${{ inputs.directory }}
+      run: ${{ github.action_path }}\GetAssemblyVersion.ps1
+outputs:
+  version:
+    description: Assembly version
+    value: ${{steps.getversion.outputs.version}}

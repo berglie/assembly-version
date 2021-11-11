@@ -1,0 +1,36 @@
+name: 'Set Assembly Version'
+author: 'berglie'
+branding:
+  icon: 'terminal'
+  color: 'purple'
+description: 'Set assembly version build number on specified assembly version file(s)'
+inputs:
+  filename:
+    description: 'Filename for assembly version'
+    required: true
+    default: 'AssemblyInfo.cs'
+  directory:
+    description: 'Directory where assembly version file is located'
+    default: './'
+  buildnumber:
+    description: 'Build number'
+    default: ${{ github.run_number }}
+  recursive:
+    description: 'Use recursive to update all assembly version files including in files in subdirectories'
+    default: true
+runs:
+  using: composite
+  steps:
+    - shell: pwsh
+      id: setversion
+      env:
+        FILENAME: ${{ inputs.filename }}
+        DIRECTORY:  ${{ inputs.directory }}
+        BUILDNUMBER:  ${{ inputs.buildnumber }}
+        RECURSIVE:  ${{ inputs.recursive }}
+      run: ${{ github.action_path }}\SetBuildNumber.ps1
+outputs:
+  version:
+    description: Assembly version
+    value: ${{steps.setversion.outputs.version}}
+    
